@@ -14,5 +14,7 @@ namespace Task_Portal.Data.Repositories.TaskRepo
         Task AddTaskAsync(Tasks task);
         Task UpdateTaskAsync(Tasks task);
         Task DeleteTaskAsync(int id);
+
+        Task UpdateTaskStatusAsync(int id, string status, int? progress = null); 
     }
 }

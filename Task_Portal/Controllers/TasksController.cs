@@ -8,7 +8,6 @@ namespace Task_Portal.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -19,7 +18,7 @@ namespace Task_Portal.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Task>>> GetTasks([FromQuery] TaskQueryParameters queryParameters)
+        public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks([FromQuery] TaskQueryParameters queryParameters)
         {
             var tasks = await _taskService.GetTasksAsync(queryParameters);
             return Ok(tasks);
@@ -37,6 +36,7 @@ namespace Task_Portal.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Tasks>> CreateTask(Tasks task)
         {
             var createdTask = await _taskService.CreateTaskAsync(task);
@@ -44,6 +44,7 @@ namespace Task_Portal.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateTask(int id, Tasks task)
         {
             var updatedTask = await _taskService.UpdateTaskAsync(id, task);
@@ -55,9 +56,18 @@ namespace Task_Portal.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTask(int id)
         {
             await _taskService.DeleteTaskAsync(id);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/status")]
+        [Authorize]
+        public async Task<IActionResult> UpdateTaskStatus(int id, [FromBody] UpdateTaskStatusRequest request)
+        {
+            await _taskService.UpdateTaskStatusAsync(id, request.Status, request.Progress);
             return NoContent();
         }
     }

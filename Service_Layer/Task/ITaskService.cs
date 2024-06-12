@@ -14,5 +14,7 @@ namespace Task_Portal.Services.Task
         Task<Tasks> CreateTaskAsync(Tasks task);
         Task<Tasks> UpdateTaskAsync(int id, Tasks task);
         ValueTask DeleteTaskAsync(int id);
+
+        ValueTask UpdateTaskStatusAsync(int id, string status, int? progress = null);
     }
 }

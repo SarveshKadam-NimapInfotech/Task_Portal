@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Task_Portal.Data.Models;
@@ -51,6 +52,27 @@ namespace Task_Portal.Data.Repositories.TaskRepo
                 .ToListAsync();
         }
 
+        //private IQueryable<Tasks> ApplySort(IQueryable<Tasks> source, string sortBy, string sortOrder)
+        //{
+        //    var propertyInfo = typeof(Tasks).GetProperty(sortBy);
+        //    if (propertyInfo == null)
+        //    {
+        //        throw new InvalidOperationException($"Property '{sortBy}' does not exist on type '{typeof(Tasks)}'.");
+        //    }
+
+        //    var parameter = Expression.Parameter(typeof(Tasks), "e");
+        //    var property = Expression.Property(parameter, propertyInfo);
+        //    var lambda = Expression.Lambda(property, parameter);
+
+        //    var methodName = sortOrder.ToLower() == "desc" ? "OrderByDescending" : "OrderBy";
+        //    var resultExpression = Expression.Call(typeof(Queryable), methodName,
+        //                                           new Type[] { typeof(Tasks), propertyInfo.PropertyType },
+        //                                           source.Expression, Expression.Quote(lambda));
+
+        //    return source.Provider.CreateQuery<Tasks>(resultExpression);
+        //}
+
+
         public async Task<Tasks> GetTaskByIdAsync(int id)
         {
             return await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
@@ -74,6 +96,21 @@ namespace Task_Portal.Data.Repositories.TaskRepo
             if (taskToDelete != null)
             {
                 _context.Tasks.Remove(taskToDelete);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateTaskStatusAsync(int id, string status, int? progress = null)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+            if (task != null)
+            {
+                task.Status = status;
+                if (progress.HasValue)
+                {
+                    task.Progress = progress.Value;
+                }
+                _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
             }
         }

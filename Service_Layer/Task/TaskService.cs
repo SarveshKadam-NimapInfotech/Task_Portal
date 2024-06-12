@@ -46,6 +46,9 @@ namespace Task_Portal.Services.Task
             existingTask.DueDate = task.DueDate;
             existingTask.Priority = task.Priority;
             existingTask.AssignedToUserId = task.AssignedToUserId;
+            existingTask.CreatedByUserId = task.CreatedByUserId;
+            existingTask.Status = task.Status;
+            existingTask.Progress = task.Progress;
 
             await _taskRepository.UpdateTaskAsync(existingTask);
             return existingTask; // Return the updated task
@@ -54,6 +57,11 @@ namespace Task_Portal.Services.Task
         public async ValueTask DeleteTaskAsync(int id)
         {
             await _taskRepository.DeleteTaskAsync(id);
+        }
+
+        public async ValueTask UpdateTaskStatusAsync(int id, string status, int? progress = null)
+        {
+            await _taskRepository.UpdateTaskStatusAsync(id, status, progress);
         }
     }
 }
