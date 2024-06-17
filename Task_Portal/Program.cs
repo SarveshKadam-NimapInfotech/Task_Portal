@@ -12,6 +12,7 @@ using Task_Portal.Services.Task;
 using Microsoft.OpenApi.Models;
 using Task_Portal.Data.Repositories.UserRepo;
 using Task_Portal.Data.Repositories.TaskRepo;
+using Task_Portal.Services.Email;
 
 namespace Task_Portal.API
 {
@@ -36,6 +37,7 @@ namespace Task_Portal.API
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITaskService, TaskService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -95,6 +97,7 @@ namespace Task_Portal.API
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {

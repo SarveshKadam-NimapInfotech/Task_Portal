@@ -42,5 +42,23 @@ namespace Task_Portal.Data.Repositories.UserRepo
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<string> GetEmailbyUserId(string userIdOrEmail)
+        {
+           
+            if (userIdOrEmail.Contains(".com"))
+            {
+                return userIdOrEmail;
+            }
+            else
+            {
+                int userId = Convert.ToInt32(userIdOrEmail);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                var userEmail = user?.Email;
+
+                return userEmail;
+            }
+
+        }
     }
 }

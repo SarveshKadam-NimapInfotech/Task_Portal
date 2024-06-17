@@ -114,5 +114,29 @@ namespace Task_Portal.Data.Repositories.TaskRepo
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task AssignTaskAsync(int taskId, string userId)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task != null)
+            {
+                task.AssignedToUserId = userId;
+                task.Status = "PendingAcceptance"; // Set status to PendingAcceptance
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateTaskAcceptanceAsync(int taskId, bool isAccepted)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task != null)
+            {
+                task.IsAccepted = isAccepted;
+                task.Status = isAccepted ? "InProgress" : "Declined";
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

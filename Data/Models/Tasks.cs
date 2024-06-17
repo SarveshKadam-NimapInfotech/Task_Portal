@@ -25,8 +25,10 @@ namespace Task_Portal.Data.Models
         public string CreatedByUserId { get; set; }
 
         [Required]
-        public string Status { get; set; }
+        public string Status { get; set; } // Status of the task (e.g., "InProgress", "Completed", "Cancelled", "PendingAcceptance")
 
         public int Progress { get; set; } // Progress of the task in percentage (0-100)
+
+        public bool IsAccepted { get; set; } // Indicates if the task is accepted by the assigned user
     }
 }

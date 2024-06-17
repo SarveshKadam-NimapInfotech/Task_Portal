@@ -13,8 +13,10 @@ namespace Task_Portal.Services.Task
         Task<Tasks> GetsTaskByIdAsync(int id);
         Task<Tasks> CreateTaskAsync(Tasks task);
         Task<Tasks> UpdateTaskAsync(int id, Tasks task);
-        ValueTask DeleteTaskAsync(int id);
+        System.Threading.Tasks.Task DeleteTaskAsync(int id);
 
-        ValueTask UpdateTaskStatusAsync(int id, string status, int? progress = null);
+        System.Threading.Tasks.Task UpdateTaskStatusAsync(int id, string status, int? progress = null);
+        System.Threading.Tasks.Task AssignTaskAsync(int taskId, string userId); // method for assigning tasks
+        System.Threading.Tasks.Task UpdateTaskAcceptanceAsync(int taskId, bool isAccepted); // method for updating acceptance status
     }
 }

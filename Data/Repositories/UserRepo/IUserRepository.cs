@@ -12,6 +12,8 @@ namespace Task_Portal.Data.Repositories.UserRepo
         Task<Users> GetUserByUsernameAsync(string username);
         Task<Users> GetUserByEmailAsync(string email);
         // Task<List<Users>> GetAllUsersAsync();
+
+        Task<string> GetEmailbyUserId(string userIdOrEmail);
         Task AddUserAsync(Users user);
         Task SaveChangesAsync();
     }

@@ -70,5 +70,19 @@ namespace Task_Portal.API.Controllers
             await _taskService.UpdateTaskStatusAsync(id, request.Status, request.Progress);
             return NoContent();
         }
+
+        [HttpPost("{taskId}/assign")]
+        public async Task<IActionResult> AssignTask(int taskId, [FromBody] AssignTaskRequest request)
+        {
+            await _taskService.AssignTaskAsync(taskId, request.UserId);
+            return NoContent();
+        }
+
+        [HttpPatch("{taskId}/acceptance")]
+        public async Task<IActionResult> UpdateTaskAcceptance(int taskId, [FromBody] UpdateTaskAcceptanceRequest request)
+        {
+            await _taskService.UpdateTaskAcceptanceAsync(taskId, request.IsAccepted);
+            return NoContent();
+        }
     }
 }
