@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
-namespace Task_Portal.Services.User
+namespace Task_Portal.Services.IServices
 {
     public interface IUserService
     {
@@ -15,7 +15,9 @@ namespace Task_Portal.Services.User
         Task<string> LogoutAsync(IEnumerable<Claim> claims);
 
         Task<bool> ResetPasswordAsync(string username, string newPassword);
-       // Task<List<Users>> GetAllUsersAsync();
-      
+        // Task<List<Users>> GetAllUsersAsync();
+
+        Task<Users> GetUserByIdAsync(string userId);
+        Task<Users> UpdateUserAsync(string userId, Users user);
     }
 }

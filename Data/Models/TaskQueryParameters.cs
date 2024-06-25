@@ -15,5 +15,7 @@ namespace Task_Portal.Data.Models
         public string SortOrder { get; set; } = "asc"; // or "desc"
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+
+        public List<int> CategoryIds { get; set; } // Filter tasks by category IDs
     }
 }

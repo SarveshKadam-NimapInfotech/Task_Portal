@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Task_Portal.Data.Models;
-using Task_Portal.Services.Task;
+using Task_Portal.Services.IServices;
 
 namespace Task_Portal.API.Controllers
 {
@@ -82,6 +82,45 @@ namespace Task_Portal.API.Controllers
         public async Task<IActionResult> UpdateTaskAcceptance(int taskId, [FromBody] UpdateTaskAcceptanceRequest request)
         {
             await _taskService.UpdateTaskAcceptanceAsync(taskId, request.IsAccepted);
+            return NoContent();
+        }
+
+        //[HttpGet("categories")]
+        //public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        //{
+        //    var categories = await _taskService.GetCategoriesAsync();
+        //    return Ok(categories);
+        //}
+
+        //[HttpGet("category/{categoryId}/tasks")]
+        //public async Task<ActionResult<IEnumerable<Tasks>>> GetTasksByCategory(int categoryId, [FromQuery] TaskQueryParameters queryParameters)
+        //{
+        //    var tasks = await _taskService.GetTasksByCategoryAsync(categoryId, queryParameters);
+        //    return Ok(tasks);
+        //}
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<ActionResult<IEnumerable<Tasks>>> GetTasksByCategory(int categoryId)
+        {
+            var tasks = await _taskService.GetTasksByCategoryAsync(categoryId);
+            return Ok(tasks);
+        }
+
+        [HttpPut("{taskId}/assign-category")]
+        public async Task<IActionResult> AssignCategory(int taskId, [FromBody] AssignCategoryRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _taskService.AssignCategoryAsync(taskId, request.CategoryId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
             return NoContent();
         }
     }

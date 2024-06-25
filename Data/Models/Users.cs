@@ -24,5 +24,8 @@ namespace Task_Portal.Data.Models
         public string Country { get; set; }
         public string State { get; set; }
         public string City { get; set; }
+
+        public ICollection<UserRole> UserRoles { get; set; }
+
     }
 }

@@ -10,9 +10,12 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
-using Task_Portal.Data.Repositories.UserRepo;
+using Task_Portal.Data.IRepositories;
+using Task_Portal.Services.IServices;
+using Task_Portal.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
-namespace Task_Portal.Services.User
+namespace Task_Portal.Services.Services
 {
     public class UserService : IUserService
     {
@@ -60,7 +63,7 @@ namespace Task_Portal.Services.User
                 return null;
             }
 
-            return GenerateToken(user);
+            return await GenerateToken(user);
         }
 
         public async Task<string> LogoutAsync(IEnumerable<Claim> claims)
@@ -101,7 +104,7 @@ namespace Task_Portal.Services.User
             return HashPassword(password) == passwordHash;
         }
 
-        private string GenerateToken(Users user, int expiryInSeconds = 1800)
+        private async Task<string> GenerateToken(Users user, int expiryInSeconds = 1800)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -110,9 +113,16 @@ namespace Task_Portal.Services.User
             new Claim(JwtRegisteredClaimNames.Sub, user.Username),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Unique identifier for the token
+            new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString())
             };
 
 
+            var roles = await _userRepository.Roles(user.Id);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+
+            }
             var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
@@ -153,5 +163,27 @@ namespace Task_Portal.Services.User
             return tokenHandler.WriteToken(token);
         }
 
+        public async Task<Users> GetUserByIdAsync(string userId)
+        {
+           return await _userRepository.GetUserByIdAsync(userId);
+        }
+
+        public async Task<Users> UpdateUserAsync(string userId, Users user)
+        {
+            var existingUser = await _userRepository.GetUserByIdAsync(userId);
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            existingUser.Email = user.Email;
+            existingUser.DateOfBirth = user.DateOfBirth;
+            existingUser.Country = user.Country;
+            existingUser.State = user.State;
+            existingUser.City = user.City;
+
+            await _userRepository.UpdateUserAsync(existingUser);
+            return existingUser;
+        }
     }
 }

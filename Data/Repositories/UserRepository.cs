@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Task_Portal.Data.IRepositories;
 
-namespace Task_Portal.Data.Repositories.UserRepo
+namespace Task_Portal.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -45,7 +46,7 @@ namespace Task_Portal.Data.Repositories.UserRepo
 
         public async Task<string> GetEmailbyUserId(string userIdOrEmail)
         {
-           
+
             if (userIdOrEmail.Contains(".com"))
             {
                 return userIdOrEmail;
@@ -59,6 +60,26 @@ namespace Task_Portal.Data.Repositories.UserRepo
                 return userEmail;
             }
 
+        }
+
+        public async Task<Users> GetUserByIdAsync(string userId)
+        {
+            int user = Convert.ToInt32(userId);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == user);
+        }
+
+        public async Task UpdateUserAsync(Users user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Role>> Roles(int userId)
+        {
+            var userRoles = await _context.UserRoles.Where(u => u.UserId == userId).ToListAsync();
+            var roleIds = userRoles.Select(u => u.RoleId).ToList();
+            var roles =await _context.Roles.Where(r => roleIds.Contains(r.Id)).ToListAsync();
+            return roles;
         }
     }
 }

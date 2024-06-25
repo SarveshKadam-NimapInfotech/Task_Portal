@@ -5,9 +5,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Task_Portal.Data.IRepositories;
 using Task_Portal.Data.Models;
 
-namespace Task_Portal.Data.Repositories.TaskRepo
+namespace Task_Portal.Data.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
@@ -138,5 +139,32 @@ namespace Task_Portal.Data.Repositories.TaskRepo
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<Category>> GetCategoriesAsync()
+        {
+            return await _context.Categories.ToListAsync();
+        }
+
+        public async Task<Category> GetCategoryByIdAsync(int id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Tasks>> GetTasksByCategoryAsync(int categoryId, TaskQueryParameters queryParameters)
+        {
+            var query = _context.Tasks.Where(t => t.CategoryId == categoryId);
+
+            // Apply filtering, sorting, pagination logic here if needed
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Tasks>> GetTasksByCategoryAsync(int categoryId)
+        {
+            return await _context.Tasks
+                .Where(t => t.CategoryId == categoryId)
+                .ToListAsync();
+        }
+
     }
 }

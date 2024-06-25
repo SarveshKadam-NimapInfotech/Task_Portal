@@ -5,25 +5,18 @@
 namespace TaskPortal.API.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEmail : Migration
+    public partial class AssignCategory : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsAccepted",
-                table: "Tasks",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "IsAccepted",
-                table: "Tasks");
+
         }
     }
 }

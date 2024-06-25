@@ -1,5 +1,4 @@
-﻿
-namespace Task_Portal.Services.Email
+﻿namespace Task_Portal.Services.IServices
 {
     public interface IEmailService
     {

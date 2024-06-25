@@ -6,8 +6,9 @@ using System.Net.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Task_Portal.Services.IServices;
 
-namespace Task_Portal.Services.Email
+namespace Task_Portal.Services.Services
 {
     public class EmailService : IEmailService
     {
@@ -18,7 +19,7 @@ namespace Task_Portal.Services.Email
             _configuration = configuration;
         }
 
-        public async System.Threading.Tasks.Task SendEmailAsync(string to, string subject, string body)
+        public async Task SendEmailAsync(string to, string subject, string body)
         {
             try
             {

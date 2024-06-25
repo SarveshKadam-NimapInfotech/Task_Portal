@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Task_Portal.Services.User;
 using System.IdentityModel.Tokens.Jwt;
-using Task_Portal.Services.Task;
 using Microsoft.OpenApi.Models;
-using Task_Portal.Data.Repositories.UserRepo;
-using Task_Portal.Data.Repositories.TaskRepo;
-using Task_Portal.Services.Email;
+using Task_Portal.Data.IRepositories;
+using Task_Portal.Data.Repositories;
+using Task_Portal.Services.IServices;
+using Task_Portal.Services.Services;
+using Hangfire;
 
 namespace Task_Portal.API
 {
@@ -31,10 +31,17 @@ namespace Task_Portal.API
             sqlServerOptions => sqlServerOptions.MigrationsAssembly("Task_Portal.API")
             )
             );
+            builder.Services.AddHangfire(config =>
+            config.UseSqlServerStorage(builder.Configuration.GetConnectionString("Task_Portal")));
+            builder.Services.AddHangfireServer();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 
+
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
@@ -104,6 +111,10 @@ namespace Task_Portal.API
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
                 });
             }
+
+            app.UseHangfireDashboard();
+            RecurringJob.AddOrUpdate<ReminderJob>("send-reminder-emails", job => job.Execute(), Cron.Minutely);
+
 
             app.UseHttpsRedirection();
 

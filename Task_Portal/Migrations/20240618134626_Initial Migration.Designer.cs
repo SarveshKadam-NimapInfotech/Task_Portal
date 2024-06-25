@@ -12,8 +12,8 @@ using Task_Portal.Data.Models;
 namespace TaskPortal.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240614102055_Add Email")]
-    partial class AddEmail
+    [Migration("20240618134626_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

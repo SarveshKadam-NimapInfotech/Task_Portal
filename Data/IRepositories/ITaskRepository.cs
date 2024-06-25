@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Task_Portal.Data.Models;
 
-namespace Task_Portal.Data.Repositories.TaskRepo
+namespace Task_Portal.Data.IRepositories
 {
     public interface ITaskRepository
     {
@@ -18,5 +18,12 @@ namespace Task_Portal.Data.Repositories.TaskRepo
         Task UpdateTaskStatusAsync(int id, string status, int? progress = null);
         Task AssignTaskAsync(int taskId, string userId); // method for assigning tasks
         Task UpdateTaskAcceptanceAsync(int taskId, bool isAccepted); // method for updating acceptance status
+
+        Task<IEnumerable<Category>> GetCategoriesAsync();
+        Task<Category> GetCategoryByIdAsync(int id);
+
+        Task<IEnumerable<Tasks>> GetTasksByCategoryAsync(int categoryId, TaskQueryParameters queryParameters);
+        Task<IEnumerable<Tasks>> GetTasksByCategoryAsync(int categoryId);
+
     }
 }

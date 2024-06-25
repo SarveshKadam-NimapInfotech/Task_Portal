@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Task_Portal.Data.Repositories.UserRepo
+namespace Task_Portal.Data.IRepositories
 {
     public interface IUserRepository
     {
@@ -16,5 +16,10 @@ namespace Task_Portal.Data.Repositories.UserRepo
         Task<string> GetEmailbyUserId(string userIdOrEmail);
         Task AddUserAsync(Users user);
         Task SaveChangesAsync();
+
+        Task<Users> GetUserByIdAsync(string userId);
+
+        Task UpdateUserAsync(Users user);
+        Task<List<Role>> Roles(int userId);
     }
 }

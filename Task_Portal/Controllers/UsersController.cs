@@ -1,9 +1,11 @@
 ﻿using Task_Portal.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Task_Portal.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Task_Portal.Services.IServices;
+using System.Threading.Tasks;
+using Task_Portal.Services.Services;
 
 namespace Task_Portal.API.Controllers
 {
@@ -86,6 +88,29 @@ namespace Task_Portal.API.Controllers
             }
 
         }
+
+        [HttpGet("view-user")]
+        public async Task<ActionResult<Users>> GetUserByIdAsync(string userId)
+        {
+            var userProfile = await _userService.GetUserByIdAsync(userId);
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+            return userProfile;
+        }
+
+        [HttpPut("update-user")]
+        public async Task<IActionResult> UpdateUser(string userId, Users user)
+        {
+            var updatedUser = await _userService.UpdateUserAsync(userId, user);
+            if (updatedUser == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         //[HttpGet("all")]

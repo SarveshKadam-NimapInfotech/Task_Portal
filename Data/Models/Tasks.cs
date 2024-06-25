@@ -30,5 +30,8 @@ namespace Task_Portal.Data.Models
         public int Progress { get; set; } // Progress of the task in percentage (0-100)
 
         public bool IsAccepted { get; set; } // Indicates if the task is accepted by the assigned user
+
+        public int CategoryId { get; set; } // New field for category association
+        public Category Category { get; set; } // Navigation property
     }
 }
