@@ -23,6 +23,8 @@ namespace Task_Portal.Data.Models
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
 
+        public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -39,7 +41,7 @@ namespace Task_Portal.Data.Models
              new Role { Id = 2, Name = "User" }
              );
 
-         modelBuilder.Entity<UserRole>()
+            modelBuilder.Entity<UserRole>()
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
 
             modelBuilder.Entity<UserRole>()
@@ -51,6 +53,8 @@ namespace Task_Portal.Data.Models
                 .HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
+
+
         }
     }
 }

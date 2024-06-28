@@ -14,6 +14,7 @@ using Task_Portal.Data.IRepositories;
 using Task_Portal.Services.IServices;
 using Task_Portal.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Task_Portal.Services.Services
 {
@@ -47,7 +48,16 @@ namespace Task_Portal.Services.Services
                 DateOfBirth = dob,
                 Country = country,
                 State = state,
-                City = city
+                City = city,
+
+                UserRoles = new List<UserRole>
+                {
+                    new UserRole
+                    {
+                        //RoleId = _context.Roles.Single(r => r.RoleName == "User").RoleId
+                        RoleId = await _userRepository.GetRoleId("User")
+                    }
+                }
             };
 
             await _userRepository.AddUserAsync(user);
@@ -92,7 +102,7 @@ namespace Task_Portal.Services.Services
         //{
         //    return await _userRepository.GetAllUsersAsync();
         //}
-        private string HashPassword(string password)
+        public string HashPassword(string password)
         {
             using var sha256 = SHA256.Create();
             var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -184,6 +194,35 @@ namespace Task_Portal.Services.Services
 
             await _userRepository.UpdateUserAsync(existingUser);
             return existingUser;
+        }
+
+        public async Task<IEnumerable<Users>> GetUsersAsync(int pageNumber, int pageSize)
+        {
+            return await _userRepository.GetUsersAsync(pageNumber, pageSize);
+        }
+
+        public async Task<IEnumerable<Users>> GetAllUsersAsync()
+        {
+            return await _userRepository.GetAllUsersAsync();
+        }
+
+        public async Task InvalidateToken(string token)
+        {
+            var blacklistedToken = new BlacklistedToken
+            {
+                Token = token,
+                BlacklistedAt = DateTime.UtcNow
+            };
+
+            await _userRepository.InvalidateTokenAsync(blacklistedToken);
+            
+        }
+
+        public bool IsTokenValid(string token)
+        {
+            bool isValid = _userRepository.IsTokenValidAsync(token);
+            return isValid;
+           
         }
     }
 }

@@ -55,14 +55,18 @@ namespace Task_Portal.API.Controllers
             return Unauthorized();
         }
 
-
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            var claims = User.Claims;
-            var shortLivedToken = await _userService.LogoutAsync(claims);
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            return Ok(new { Token = shortLivedToken });
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest(new { message = "Token is missing." });
+            }
+
+            _userService.InvalidateToken(token);
+            return Ok(new { message = "Successfully logged out." });
         }
 
         [HttpPost("reset-password")]

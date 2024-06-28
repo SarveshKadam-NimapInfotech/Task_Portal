@@ -81,5 +81,46 @@ namespace Task_Portal.Data.Repositories
             var roles =await _context.Roles.Where(r => roleIds.Contains(r.Id)).ToListAsync();
             return roles;
         }
+
+        public async Task<IEnumerable<Users>> GetUsersAsync(int pageNumber, int pageSize)
+        {
+            return await _context.Users
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Users>> GetAllUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
+        public async Task BulkInsertAsync(List<Users> users)
+        {
+            await _context.Users.AddRangeAsync(users);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetRoleId(string role)
+        {
+            var data = await _context.Roles.SingleAsync(r => r.Name == role);
+            return data.Id;
+        }
+
+        public async Task<Role> GetRoleByNameAsync(string roleName)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+        }
+
+        public async Task InvalidateTokenAsync(BlacklistedToken blacklistedToken)
+        {
+            _context.BlacklistedTokens.Add(blacklistedToken);
+            await _context.SaveChangesAsync();
+        }
+
+        public bool IsTokenValidAsync(string token)
+        {
+            return !_context.BlacklistedTokens.Any(t => t.Token == token);
+        }
     }
 }

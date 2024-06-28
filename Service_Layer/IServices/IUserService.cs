@@ -19,5 +19,13 @@ namespace Task_Portal.Services.IServices
 
         Task<Users> GetUserByIdAsync(string userId);
         Task<Users> UpdateUserAsync(string userId, Users user);
+        string HashPassword(string password);
+
+        Task<IEnumerable<Users>> GetUsersAsync(int pageNumber, int pageSize);
+        Task<IEnumerable<Users>> GetAllUsersAsync();
+
+        Task InvalidateToken(string token);
+
+        bool IsTokenValid(string token);
     }
 }

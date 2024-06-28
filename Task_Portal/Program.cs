@@ -39,12 +39,14 @@ namespace Task_Portal.API
             builder.Services.AddScoped<ITaskRepository, TaskRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -73,7 +75,7 @@ namespace Task_Portal.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Task Portal API", Version = "v1" });
 
                 // Add JWT Authentication
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -97,6 +99,8 @@ namespace Task_Portal.API
                     },
                     new string[] { }
                 }});
+
+                c.OperationFilter<FileUploadOperationFilter>();
             });
 
             var app = builder.Build();
@@ -108,13 +112,14 @@ namespace Task_Portal.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task Portal API V1");
                 });
             }
 
             app.UseHangfireDashboard();
             RecurringJob.AddOrUpdate<ReminderJob>("send-reminder-emails", job => job.Execute(), Cron.Minutely);
 
+            app.UseMiddleware<BlacklistToken>();
 
             app.UseHttpsRedirection();
 

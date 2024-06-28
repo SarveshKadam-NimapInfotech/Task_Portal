@@ -21,5 +21,15 @@ namespace Task_Portal.Data.IRepositories
 
         Task UpdateUserAsync(Users user);
         Task<List<Role>> Roles(int userId);
+
+        Task<IEnumerable<Users>> GetUsersAsync(int pageNumber, int pageSize);
+
+        Task<IEnumerable<Users>> GetAllUsersAsync();
+        Task BulkInsertAsync(List<Users> users);
+        Task<int> GetRoleId(string role);
+
+        Task<Role> GetRoleByNameAsync(string roleName);
+        Task InvalidateTokenAsync(BlacklistedToken blacklistedToken);
+        bool IsTokenValidAsync(string token);
     }
 }
