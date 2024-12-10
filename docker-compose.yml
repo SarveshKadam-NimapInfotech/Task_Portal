@@ -1,0 +1,27 @@
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: task_portal_db
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Task_Portal@123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - task_portal_db:/var/opt/mssql
+
+  myapp:
+    build: .
+    image: my-dotnet-app
+    container_name: Task_Portal
+    restart: always
+    depends_on:
+      - sqlserver
+    ports:
+      - "5281:80"
+
+volumes:
+  task_portal_db:
+  
