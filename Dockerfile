@@ -15,7 +15,7 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Expose the port the app will run on
-# EXPOSE 80
+EXPOSE 80
 
 # Start the application
 ENTRYPOINT ["dotnet", "Task_Portal.API.dll"]
